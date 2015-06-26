@@ -9,29 +9,14 @@
         <configurator
               class="org.wisdom.m2e.core.configurator.WisdomConfigurator"
               id="org.wisdom.m2e.core.configurator.wisdomConfigurator"
-              name="Wisdom configurator"
-              >
+              name="Wisdom configurator">
         </configurator>
      </extension>
      <extension
            point="org.eclipse.m2e.core.lifecycleMappings">
         <lifecycleMapping
-              class="org.wisdom.m2e.core.configurator.WisdomLifecyleMapping"
-              id="org.wisdom.m2e.core.configurator.WisdomLifecyleMapping"
-              name="Wisdom LifeCycle Mapping">
+              class="org.wisdom.m2e.core.configurator.WisdomLifecyleMapping&#x0A;"
+              id="org.wisdom.m2e.core.configurator.WisdomLifecyleMapping&#x0A;">
         </lifecycleMapping>
-     </extension>
-     <extension
-           point="org.eclipse.m2e.core.projectConversionParticipants">
-        <projectConversionParticipant
-              class="org.wisdom.m2e.core.conversion.WisdomProjectConversionParticipant"
-              id="org.wisdom.m2e.core.projectConversionParticipant"
-              nature="org.wisdom.m2e.core.wisdomNature"
-              runsAfter="org.eclipse.m2e.jdt.javaConfigurator">
-        </projectConversionParticipant>
-        <conversionParticipantConfiguration
-              compatiblePackagings="wisdom"
-              conversionParticipantId="org.wisdom.m2e.core.conversionParticipantConfiguration">
-        </conversionParticipantConfiguration>
      </extension>
 </plugin>
