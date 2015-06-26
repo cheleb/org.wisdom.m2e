@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.wisdom.m2e.feature_1.0.0.qualifier.jar" id="org.wisdom.m2e.feature" version="1.0.0.qualifier">
+      <category name="Wisdom framework"/>
+   </feature>
+   <category-def name="Wisdom framework" label="Wisdom framework">
+      <description>
+         IDE configuration from Maven artifact Wisdom framework.
+      </description>
+   </category-def>
+</site>
