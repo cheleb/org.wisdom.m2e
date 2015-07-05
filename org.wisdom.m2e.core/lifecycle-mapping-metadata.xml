@@ -31,7 +31,7 @@
 				<artifactId>wisdom-maven-plugin</artifactId>
 				<versionRange>[0.9.0,)</versionRange>
 				<goals>
-				    <goal>initialize</goal>
+					<goal>initialize</goal>
 					<goal>compile-less</goal>
 					<goal>compile-javascript</goal>
 					<goal>compile-coffeescript</goal>
@@ -46,7 +46,7 @@
 			</pluginExecutionFilter>
 			<action>
 				<ignore />
-			</action>			
+			</action>
 		</pluginExecution>
 		<pluginExecution>
 			<pluginExecutionFilter>
@@ -62,7 +62,7 @@
 			</action>
 		</pluginExecution>
 		<pluginExecution>
-			<pluginExecutionFilter>
+			<pluginExecutionFilter>      
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<versionRange>[2.0,)</versionRange>
@@ -74,27 +74,6 @@
 				<ignore />
 			</action>
 		</pluginExecution>
-<!-- 		<pluginExecutions> -->
-<!-- 			<pluginExecution> -->
-<!-- 				<pluginExecutionFilter> -->
-<!-- 					<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 					<artifactId>maven-compiler-plugin</artifactId> -->
-<!-- 					<versionRange>[2.0,)</versionRange> -->
-<!-- 					<goals> -->
-<!-- 						<goal>compile</goal> -->
-<!-- 						<goal>testCompile</goal> -->
-<!-- 					</goals> -->
-<!-- 					<parameters> -->
-<!-- 						<compilerId>javac</compilerId> -->
-<!-- 					</parameters> -->
-<!-- 				</pluginExecutionFilter> -->
-<!-- 				<action> -->
-<!-- 					<configurator> -->
-<!-- 						<id>org.eclipse.m2e.jdt.javaConfigurator</id> -->
-<!-- 					</configurator> -->
-<!-- 				</action> -->
-<!-- 			</pluginExecution> -->
-<!-- 		</pluginExecutions> -->
 
 	</pluginExecutions>
 

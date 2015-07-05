@@ -4,15 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.jdt.MavenJdtPlugin;
@@ -51,37 +50,28 @@ public class WisdomConfigurator extends AbstractJavaProjectConfigurator {
 		addJREClasspathContainer(classpath, environmentId);
 
 		addMavenClasspathContainer(classpath);
-		
-		
-		 addCustomClasspathEntries(javaProject, classpath);
 
-		    invokeJavaProjectConfigurators(classpath, request, monitor);
+		addCustomClasspathEntries(javaProject, classpath);
 
-		    // now apply new configuration
+		invokeJavaProjectConfigurators(classpath, request, monitor);
 
-		    // A single setOptions call erases everything else from an existing settings file.
-		    // Must invoke setOption individually to preserve previous options. 
-		    for(Map.Entry<String, String> option : options.entrySet()) {
-		      javaProject.setOption(option.getKey(), option.getValue());
-		    }
+		// now apply new configuration
 
-		    IContainer classesFolder = getOutputLocation(request, project);
+		// A single setOptions call erases everything else from an existing
+		// settings file.
+		// Must invoke setOption individually to preserve previous options.
+		for (Map.Entry<String, String> option : options.entrySet()) {
+			javaProject.setOption(option.getKey(), option.getValue());
+		}
 
-		    javaProject.setRawClasspath(classpath.getEntries(), classesFolder.getFullPath(), monitor);
+		IContainer classesFolder = getOutputLocation(request, project);
 
-		    MavenJdtPlugin.getDefault().getBuildpathManager().updateClasspath(project, monitor);
-		
-		
-		
-		
+		javaProject.setRawClasspath(classpath.getEntries(), classesFolder.getFullPath(), monitor);
+
+		MavenJdtPlugin.getDefault().getBuildpathManager().updateClasspath(project, monitor);
 
 		MavenProject mavenProject = request.getMavenProject();
 
-		
-		
-		
-		
-		
 		Plugin plugin = mavenProject.getPlugin(MOJO_GA);
 		if (plugin == null) {
 			LOGGER.info("Should not occurs ... but could not set eclipse settings, consider " + MOJO_GA + "!");
@@ -101,32 +91,38 @@ public class WisdomConfigurator extends AbstractJavaProjectConfigurator {
 			IProgressMonitor monitor) throws CoreException {
 		String source = null, target = null;
 
-		// for(MojoExecution execution : getCompilerMojoExecutions(request,
-		// monitor)) {
-		// source = getCompilerLevel(request.getMavenProject(), execution,
-		// "source", source, SOURCES, monitor); //$NON-NLS-1$
-		// target = getCompilerLevel(request.getMavenProject(), execution,
-		// "target", target, TARGETS, monitor); //$NON-NLS-1$
-		// }
-
+		Plugin plugin = request.getMavenProject().getPlugin("org.apache.maven.plugins:maven-compiler-plugin");
+		if (plugin != null) {
+			Xpp3Dom mavenCompilerConfiguration = (Xpp3Dom) plugin.getConfiguration();
+			if (mavenCompilerConfiguration != null) {
+				Xpp3Dom sourceElement = mavenCompilerConfiguration.getChild("source");
+				if (sourceElement != null) {
+					source = sourceElement.getValue();
+				}
+				Xpp3Dom targetElement = mavenCompilerConfiguration.getChild("target");
+				if (targetElement != null) {
+					target = targetElement.getValue();
+				}
+			}
+		}
 		if (source == null) {
-			source = "1.8";
+			source = "1.7";
 			LOGGER.warn("Could not determine source level, using default " + source);
 		}
 
 		if (target == null) {
-			target = "1.8";
+			target = "1.7";
 			LOGGER.warn("Could not determine target level, using default " + target);
 		}
 
 		// While "5" and "6" ... are valid synonyms for Java 5, Java 6 ...
 		// source,
 		// Eclipse expects the values 1.5 and 1.6 and so on.
-		// source = sanitizeJavaVersion(source);
+		source = sanitizeJavaVersion(source);
 		// While "5" and "6" ... are valid synonyms for Java 5, Java 6 ...
 		// target,
 		// Eclipse expects the values 1.5 and 1.6 and so on.
-		// target = sanitizeJavaVersion(target);
+		target = sanitizeJavaVersion(target);
 
 		options.put(JavaCore.COMPILER_SOURCE, source);
 		options.put(JavaCore.COMPILER_COMPLIANCE, source);
@@ -137,6 +133,21 @@ public class WisdomConfigurator extends AbstractJavaProjectConfigurator {
 		if (jp != null && jp.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, false) == null) {
 			options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, "warning"); //$NON-NLS-1$
 		}
+	}
+
+	private String sanitizeJavaVersion(String version) {
+		switch (version) {
+		case "5":
+		case "6":
+		case "7":
+		case "8":
+		case "9":
+			version = "1." + version;
+			break;
+		default:
+			break;
+		}
+		return version;
 	}
 
 }
